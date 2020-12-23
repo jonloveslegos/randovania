@@ -3,7 +3,7 @@
         "Combat Visor": {
             "item_category": "visor",
             "broad_category": "hud",
-            "model_index": 10,
+                "model_index": 10,
             "progression": [8],
             "probability_offset": 0,
             "probability_multiplier": 1
@@ -75,7 +75,7 @@
 
         "Power Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 30,
             "progression": [0],
             "probability_offset": 0,
@@ -84,7 +84,7 @@
         },
         "Charge Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 1,
             "progression": [22],
             "probability_offset": 0,
@@ -92,7 +92,7 @@
         },
         "Dark Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 2,
             "progression": [1],
             "ammo": [45],
@@ -102,7 +102,7 @@
         },
         "Light Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 3,
             "progression": [2],
             "ammo": [46],
@@ -112,7 +112,7 @@
         },
         "Annihilator Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 4,
             "progression": [3],
             "ammo": [45, 46],
@@ -228,7 +228,7 @@
 
         "Missile Launcher": {
             "item_category": "missile",
-            "broad_category": "missile_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 24,
             "ammo": [44],
             "converts_indices": [71],
@@ -239,7 +239,7 @@
         },
         "Seeker Launcher": {
             "item_category": "missile",
-            "broad_category": "missile_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 25,
             "ammo": [44],
             "progression": [26],
@@ -251,7 +251,7 @@
 
         "Super Missile": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 5,
             "progression": [4],
             "original_index": 74,
@@ -260,7 +260,7 @@
         },
         "Sunburst": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 7,
             "progression": [6],
             "original_index": 7,
@@ -269,7 +269,7 @@
         },
         "Darkburst": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 6,
             "progression": [5],
             "original_index": 27,
@@ -278,7 +278,7 @@
         },
         "Sonic Boom": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 8,
             "progression": [7],
             "original_index": 59,

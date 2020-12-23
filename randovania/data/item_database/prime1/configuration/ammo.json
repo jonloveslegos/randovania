@@ -3,7 +3,7 @@
     "Missile Expansion": {
         "models": [4],
         "items": [4],
-        "broad_category": "missile_related",
+        "broad_category": "non_elemental_weapon",
         "unlocked_by": 4,
         "temporaries": [1002],
         "maximum": 255

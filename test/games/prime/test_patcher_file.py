@@ -346,7 +346,7 @@ def test_create_pickup_list(model_style: PickupModelStyle, empty_patches):
                                ConditionalResources(None, None, ((resource_b, 1), (resource_a, 1))),
                                ConditionalResources(None, resource_b, ((resource_a, 5),))
                            ))
-    pickup_c = PickupEntry("C", 2, ItemCategory.EXPANSION, ItemCategory.MISSILE_RELATED,
+    pickup_c = PickupEntry("C", 2, ItemCategory.EXPANSION, ItemCategory.NON_ELEMENTAL_WEAPON,
                            resources=(
                                ConditionalResources(None, None, ((resource_b, 2), (resource_a, 1))),
                            ),
@@ -495,7 +495,7 @@ def test_create_pickup_list_random_data_source(has_memo_data: bool, empty_patche
     pickup_b = PickupEntry("B", 2, ItemCategory.SUIT, ItemCategory.LIFE_SUPPORT,
                            (ConditionalResources(None, None, tuple()),
                             ConditionalResources(None, resource_b, tuple()),))
-    pickup_c = PickupEntry("C", 2, ItemCategory.EXPANSION, ItemCategory.MISSILE_RELATED, resources)
+    pickup_c = PickupEntry("C", 2, ItemCategory.EXPANSION, ItemCategory.NON_ELEMENTAL_WEAPON, resources)
     useless_pickup = PickupEntry("Useless", 0, ItemCategory.ETM, ItemCategory.ETM, resources)
 
     patches = empty_patches.assign_pickup_assignment({

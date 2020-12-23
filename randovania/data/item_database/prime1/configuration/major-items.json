@@ -2,7 +2,7 @@
     "items": {
         "Charge Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 10,
             "progression": [
                 10
@@ -13,7 +13,7 @@
         },
         "Power Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 0,
             "progression": [
                 0
@@ -24,7 +24,7 @@
         },
         "Plasma Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 3,
             "progression": [
                 3
@@ -35,7 +35,7 @@
         },
         "Ice Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 1,
             "progression": [
                 1
@@ -46,7 +46,7 @@
         },
         "Wave Beam": {
             "item_category": "beam",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 2,
             "progression": [
                 2
@@ -58,7 +58,7 @@
 
         "Missile Launcher": {
             "item_category": "missile",
-            "broad_category": "missile",
+            "broad_category": "non_elemental_weapon",
             "model_index": 4,
             "progression": [4],
             "ammo": [
@@ -83,7 +83,7 @@
 
         "Combat Visor": {
             "item_category": "visor",
-            "broad_category": "visor",
+            "broad_category": "hud",
             "model_index": 17,
             "progression": [
                 17
@@ -94,7 +94,7 @@
         },
         "Scan Visor": {
             "item_category": "visor",
-            "broad_category": "visor",
+            "broad_category": "hud",
             "model_index": 5,
             "progression": [
                 5
@@ -105,7 +105,7 @@
         },
         "Thermal Visor": {
             "item_category": "visor",
-            "broad_category": "visor",
+            "broad_category": "hud",
             "model_index": 9,
             "progression": [
                 9
@@ -116,7 +116,7 @@
         },
         "X-Ray Visor": {
             "item_category": "visor",
-            "broad_category": "visor",
+            "broad_category": "hud",
             "model_index": 13,
             "progression": [
                 13
@@ -253,7 +253,7 @@
         },
         "Super Missile": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "non_elemental_weapon",
             "model_index": 11,
             "progression": [
                 11
@@ -264,7 +264,7 @@
         },
         "Wavebuster": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 28,
             "progression": [
                 28
@@ -275,7 +275,7 @@
         },
         "Ice Spreader": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 14,
             "progression": [
                 14
@@ -286,7 +286,7 @@
         },
         "Flamethrower": {
             "item_category": "charge_combo",
-            "broad_category": "beam_related",
+            "broad_category": "elemental_weapon",
             "model_index": 8,
             "progression": [
                 8

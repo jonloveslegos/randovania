@@ -20,9 +20,9 @@ class ItemCategory(BitPackEnum, Enum):
     SKY_TEMPLE_KEY = "sky_temple_key"
     ETM = "etm"
     KEY = "key"
-    MISSILE_RELATED = "missile_related"
+    NON_ELEMENTAL_WEAPON = "non_elemental_weapon"
+    ELEMENTAL_WEAPON = "elemental_weapon"
     MORPH_BALL_RELATED = "morph_ball_related"
-    BEAM_RELATED = "beam_related"
     LIFE_SUPPORT = "life_support"
     HUD = "hud"
     EXPANSION = "expansion"
@@ -100,9 +100,9 @@ HINT_DETAILS: Dict[ItemCategory, Tuple[str, str]] = {
     ItemCategory.SKY_TEMPLE_KEY: ("a ", "Sky Temple Key"),
     ItemCategory.ETM: ("an ", "Energy Transfer Module"),
     ItemCategory.KEY: ("a ", "key"),
-    ItemCategory.MISSILE_RELATED: ("a ", "missile-related upgrade"),
+    ItemCategory.NON_ELEMENTAL_WEAPON: ("a ", "non-elemental weapon"),
+    ItemCategory.ELEMENTAL_WEAPON: ("an ", "elemental weapon"),
     ItemCategory.MORPH_BALL_RELATED: ("a ", "morph ball-related upgrade"),
-    ItemCategory.BEAM_RELATED: ("a ", "beam-related upgrade"),
     ItemCategory.LIFE_SUPPORT: ("a ", "life support system"),
     ItemCategory.HUD: ("a ", "HUD system"),
     ItemCategory.EXPANSION: ("an ", "expansion"),

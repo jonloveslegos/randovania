@@ -137,7 +137,7 @@ def test_create_missile_launcher(ammo_quantity: int, echoes_item_database, echoe
         ),
         model_index=24,
         item_category=ItemCategory.MISSILE,
-        broad_category=ItemCategory.MISSILE_RELATED,
+        broad_category=ItemCategory.NON_ELEMENTAL_WEAPON,
     )
 
 
@@ -206,7 +206,7 @@ def test_create_seeker_launcher(ammo_quantity: int,
         resources=locked_conditional if ammo_requires_major_item else normal_resources,
         model_index=25,
         item_category=ItemCategory.MISSILE,
-        broad_category=ItemCategory.MISSILE_RELATED,
+        broad_category=ItemCategory.NON_ELEMENTAL_WEAPON,
     )
 
 
