@@ -1,7 +1,9 @@
+import asyncio
 import copy
 import dataclasses
 import logging
 import struct
+import typing
 from typing import Optional, List, Dict, Tuple
 
 from randovania.dol_patching import assembler
@@ -105,12 +107,23 @@ def _capacity_for(item: ItemResourceInfo,
         return 0
 
 
+def _create_patches_for_rpc(version: BasePrimeDolVersion, rpc: dict):
+    if rpc["command"] == "adjust_item_amount_and_capacity":
+        yield all_prime_dol_patches.adjust_item_amount_and_capacity_patch(
+            version.powerup_functions,
+            version.game,
+            rpc["item_id"],
+            rpc["delta"],
+        )
+
+
 class ConnectionBackend(ConnectionBase):
     patches: Optional[BasePrimeDolVersion] = None
     _checking_for_collected_index: bool = False
     _games: Dict[RandovaniaGame, GameDescription]
     _inventory: Dict[ItemResourceInfo, InventoryItem]
     _enabled: bool = True
+    _pending_rpc: List
 
     # Detected Game
     _world: Optional[World] = None
@@ -132,6 +145,7 @@ class ConnectionBackend(ConnectionBase):
         self._inventory = {}
         self.message_queue = []
         self._permanent_pickups = []
+        self._pending_rpc = []
 
     @property
     def current_status(self) -> GameConnectionStatus:
@@ -307,6 +321,17 @@ class ConnectionBackend(ConnectionBase):
                 multiworld_magic_item.index,
             ))
 
+        elif self.message_cooldown <= 0 and self._pending_rpc:
+            rpc, signal = self._pending_rpc.pop(0)
+            signal = typing.cast(asyncio.Future, signal)
+            if RandovaniaGame(rpc["game"]) != self.patches.game:
+                signal.cancel("Wrong game")
+            else:
+                if rpc["message"]:
+                    message = rpc["message"]
+                patches.extend(_create_patches_for_rpc(self.patches, rpc))
+                signal.set_result(True)
+
         if patches:
             await self.execute_remote_patches(patches, message)
 
@@ -414,3 +439,8 @@ class ConnectionBackend(ConnectionBase):
             except MemoryOperationException as e:
                 self.logger.warning(f"Unable to perform memory operations: {e}")
                 self._world = None
+
+    async def perform_rpc(self, details: dict):
+        signal = asyncio.get_running_loop().create_future()
+        self._pending_rpc.append((details, signal))
+        await signal

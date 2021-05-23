@@ -23,6 +23,7 @@ class QtNetworkClient(QWidget, NetworkClient):
     ConnectionStateUpdated = Signal(ConnectionState)
     GameSessionUpdated = Signal(GameSessionEntry)
     GameUpdateNotification = Signal()
+    GameRpcFromServer = Signal(dict)
 
     discord: Optional[pypresence.AioClient]
 
@@ -96,6 +97,9 @@ class QtNetworkClient(QWidget, NetworkClient):
 
     async def on_game_update_notification(self, details):
         self.GameUpdateNotification.emit()
+
+    async def on_game_rpc_from_server(self, details):
+        self.GameRpcFromServer.emit(details)
 
     @property
     def available_login_methods(self) -> Set[str]:

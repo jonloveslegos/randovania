@@ -1142,6 +1142,9 @@ class GameSessionWindow(QtWidgets.QMainWindow, Ui_GameSessionWindow, BackgroundT
     @asyncSlot()
     async def on_game_connection_updated(self):
         async with self._update_status_lock:
-            await self.network_client.session_self_update(self.game_connection.get_current_inventory(),
-                                                          self.game_connection.current_status,
-                                                          self.game_connection.backend.backend_choice)
+            await self.network_client.session_self_update(
+                self.game_connection.get_current_inventory(),
+                self.game_connection.current_status,
+                self.game_connection.backend.backend_choice,
+                self.game_connection.backend.patches
+            )

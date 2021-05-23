@@ -79,3 +79,5 @@ class GameConnection(QObject, ConnectionBase):
         super().set_location_collected_listener(listener)
         self.backend.checking_for_collected_index = listener is not None
 
+    async def perform_rpc(self, details):
+        await self.backend.perform_rpc(details)

@@ -74,6 +74,7 @@ class NetworkClient:
         self.sio.on('user_session_update', self.on_user_session_updated)
         self.sio.on('game_session_update', self.on_game_session_updated)
         self.sio.on('game_has_update', self.on_game_update_notification)
+        self.sio.on('game_rpc_from_server', self.on_game_rpc_from_server)
 
     @property
     def connection_state(self) -> ConnectionState:
@@ -235,6 +236,9 @@ class NetworkClient:
         self.logger.debug(f"{self._current_game_session.id}")
 
     async def on_game_update_notification(self, details):
+        pass
+
+    async def on_game_rpc_from_server(self, details):
         pass
 
     async def _emit_with_result(self, event, data=None, namespace=None):

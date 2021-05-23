@@ -157,8 +157,8 @@ def adjust_item_amount_and_capacity_patch(
         return increment_item_capacity_patch(patch_addresses, game, item_id, delta)
 
     if delta >= 0:
-        return [
-            *increment_item_capacity_patch(patch_addresses, game, item_id, delta),
+    return [
+        *increment_item_capacity_patch(patch_addresses, game, item_id, delta),
             *adjust_item_amount_patch(patch_addresses, game, item_id, delta),
         ]
     else:
@@ -217,6 +217,15 @@ def set_artifact_layer_active_patch(layer_id: int, active: bool):
 def increment_item_capacity_patch(
         patch_addresses: PowerupFunctionsAddresses, game: RandovaniaGame, item_id: int, delta: int = 1,
 ) -> List[BaseInstruction]:
+    """
+    Adjust an item's capacity, clamping at 0 and PowerUpMaxValues[itemId].
+    After, clamps amount between 0 and newCapacity.
+    :param patch_addresses:
+    :param game:
+    :param item_id:
+    :param delta:
+    :return:
+    """
     result = [
         *_load_player_state(game, r3, r31),
         li(r4, item_id),

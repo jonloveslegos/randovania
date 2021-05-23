@@ -97,6 +97,7 @@ class MultiworldClient(QObject):
         self._data = Data(persist_path)
         self.game_connection.set_location_collected_listener(self.on_location_collected)
         self.network_client.GameUpdateNotification.connect(self.on_network_game_updated)
+        self.network_client.GameRpcFromServer.connect(self.on_rpc_from_server)
 
         await self.on_network_game_updated()
 
@@ -112,6 +113,10 @@ class MultiworldClient(QObject):
         self.game_connection.set_location_collected_listener(None)
         try:
             self.network_client.GameUpdateNotification.disconnect(self.on_network_game_updated)
+        except RuntimeError:
+            pass
+        try:
+            self.network_client.GameRpcFromServer.disconnect(self.on_rpc_from_server)
         except RuntimeError:
             pass
 
@@ -174,3 +179,7 @@ class MultiworldClient(QObject):
 
         async with self._pickups_lock:
             self.game_connection.set_permanent_pickups(self._received_pickups)
+
+    @asyncSlot(dict)
+    async def on_rpc_from_server(self, details: dict):
+        await self.game_connection.perform_rpc(details)
