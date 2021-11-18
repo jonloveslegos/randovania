@@ -224,7 +224,7 @@ def convert_prime1_pickups(echoes_files_path: Path, randomizer_data: dict, statu
     # logging.debug(f"Time took: {end - start}")
 
 
-def convert_prime2_pickups():
+def convert_prime2_pickups(output_path: Path, status_update: ProgressUpdateCallable):
     next_id = 0xFFFF0000
 
     randomizer_data_path = get_data_path().joinpath("ClarisPrimeRandomizer", "RandomizerData.json")
@@ -252,17 +252,23 @@ def convert_prime2_pickups():
         logging.info(f"Finished loading PAKs: {time.time() - start}")
 
         result = {}
-        for data in randomizer_data["ModelData"]:
-            if data["Model"] != Game.ECHOES.invalid_asset_id and data["AnimSet"] != Game.ECHOES.invalid_asset_id:
-                try:
-                    result[data["Name"]] = Asset(
-                        ancs=converter.convert_id(data["AnimSet"], Game.ECHOES, missing_assets_as_invalid=False),
-                        cmdl=converter.convert_id(data["Model"], Game.ECHOES, missing_assets_as_invalid=False),
-                        character=data["Character"],
-                        scale=data["Scale"][0],
-                    )
-                except (InvalidAssetId, UnknownAssetId) as e:
-                    logging.error("Unable to convert {}: {}".format(data["Name"], e))
+        assets_to_change = [
+            data
+            for data in randomizer_data["ModelData"]
+            if data["Model"] != Game.ECHOES.invalid_asset_id and data["AnimSet"] != Game.ECHOES.invalid_asset_id
+        ]
+
+        for i, data in enumerate(assets_to_change):
+            try:
+                status_update(f"Converting {data['Name']} from Prime 2", i / len(assets_to_change))
+                result[data["Name"]] = Asset(
+                    ancs=converter.convert_id(data["AnimSet"], Game.ECHOES, missing_assets_as_invalid=False),
+                    cmdl=converter.convert_id(data["Model"], Game.ECHOES, missing_assets_as_invalid=False),
+                    character=data["Character"],
+                    scale=data["Scale"][0],
+                )
+            except (InvalidAssetId, UnknownAssetId) as e:
+                logging.error("Unable to convert {}: {}".format(data["Name"], e))
     end = time.time()
     logging.info(f"Time took: {end - start}")
 
@@ -274,8 +280,8 @@ def convert_prime2_pickups():
         for (_, old_id), new_id in converter.converted_ids.items()
     }
 
-    Path("converted").mkdir(exist_ok=True)
-    with open("converted/meta.json", "w") as meta_out:
+    output_path.mkdir(exist_ok=True, parents=True)
+    with output_path.joinpath("meta.json").open("w") as meta_out:
         json.dump({
             "items": {
                 name: {
@@ -301,7 +307,7 @@ def convert_prime2_pickups():
         }, meta_out, indent=4)
 
     for asset in converter.converted_assets.values():
-        Path("converted").joinpath(f"{asset.id}.{asset.type.upper()}").write_bytes(
+        output_path.joinpath(f"{asset.id}.{asset.type.upper()}").write_bytes(
             format_for(asset.type).build(asset.resource, target_game=Game.PRIME)
         )
 
@@ -309,4 +315,4 @@ def convert_prime2_pickups():
 
 
 if __name__ == '__main__':
-    convert_prime2_pickups()
+    convert_prime2_pickups(Path("converted"), print)

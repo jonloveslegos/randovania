@@ -19,6 +19,7 @@ from randovania.game_description.world.area_identifier import AreaIdentifier
 from randovania.game_description.world.node import PickupNode, TeleporterNode
 from randovania.game_description.world.world_list import WorldList
 from randovania.games.game import RandovaniaGame
+from randovania.lib import status_update_lib
 from randovania.patching.patcher import Patcher
 from randovania.patching.prime import all_prime_dol_patches
 from randovania.games.prime1.patcher import prime1_elevators, prime_items
@@ -194,6 +195,10 @@ def _name_for_location(world_list: WorldList, location: AreaIdentifier) -> str:
         return prime1_elevators.RANDOM_PRIME_CUSTOM_NAMES[loc]
     else:
         return world_list.area_name(world_list.area_by_area_location(location), separator=":")
+
+
+def adjust_model_name(patch_data: dict, echoes_randomizer_data: dict):
+    pass
 
 
 class RandomprimePatcher(Patcher):
@@ -423,6 +428,16 @@ class RandomprimePatcher(Patcher):
                 ],
                 symbols=symbols)
         )
+
+        if patch_data.pop("convert_other_game_assets", False):
+            from randovania.patching.prime import asset_conversion
+            from randovania.games.prime2.patcher import claris_patcher
+
+            updaters = status_update_lib.split_progress_update(progress_update, 2)
+            progress_update = updaters[1]
+            modified_assets = internal_copies_path.joinpath("prime1", "modified_assets")
+            asset_conversion.convert_prime2_pickups(modified_assets, updaters[0])
+            adjust_model_name(patch_data, claris_patcher.decode_randomizer_data())
 
         patch_as_str = json.dumps(new_config, indent=4, separators=(',', ': '))
         if has_spoiler:
