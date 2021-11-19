@@ -166,6 +166,7 @@ class MainWindow(WindowManager, Ui_MainWindow):
         self.menu_action_previously_generated_games.triggered.connect(self._on_menu_action_previously_generated_games)
         self.menu_action_log_files_directory.triggered.connect(self._on_menu_action_log_files_directory)
         self.menu_action_layout_editor.triggered.connect(self._on_menu_action_layout_editor)
+        self.menu_action_run_solver_for.triggered.connect(self._on_menu_action_run_solver_for)
 
         # Setting this event only now, so all options changed trigger only once
         options.on_options_changed = self.options_changed_signal.emit
@@ -564,3 +565,18 @@ class MainWindow(WindowManager, Ui_MainWindow):
         from randovania.gui.corruption_layout_editor import CorruptionLayoutEditor
         self.corruption_editor = CorruptionLayoutEditor()
         self.corruption_editor.show()
+
+    def _on_menu_action_run_solver_for(self):
+        log_file = common_qt_lib.prompt_user_for_input_game_log(self)
+        if log_file is None:
+            return
+
+        description = LayoutDescription.from_file(log_file)
+        configuration = description.permalink.presets[0].configuration
+        patches = description.all_patches[0]
+
+        final_state_by_resolve = asyncio.run(resolver.resolve(
+            configuration=configuration,
+            patches=patches
+        ))
+
