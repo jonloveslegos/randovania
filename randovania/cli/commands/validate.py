@@ -1,5 +1,6 @@
 import asyncio
 import time
+import typing
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -16,6 +17,15 @@ def validate_command_logic(args):
     if description.permalink.player_count != 1:
         raise ValueError(f"Validator does not support layouts with more than 1 player.")
 
+    output_file = None
+    if args.write_to is not None:
+        output_file = typing.cast(Path, args.write_to).open("w")
+
+        def write_to_log(*a):
+            output_file.write("    ".join(str(t) for t in a) + "\n")
+
+        debug.print_function = write_to_log
+
     configuration = description.permalink.presets[0].configuration
     patches = description.all_patches[0]
 
@@ -29,6 +39,8 @@ def validate_command_logic(args):
         after - before,
         "possible" if final_state_by_resolve is not None else "impossible")
     )
+    if output_file is not None:
+        output_file.close()
 
 
 def add_validate_command(sub_parsers):
@@ -42,4 +54,6 @@ def add_validate_command(sub_parsers):
         "layout_file",
         type=Path,
         help="The layout seed log file to validate.")
+    parser.add_argument("--write-to", type=Path, help="Write debug output to")
+
     parser.set_defaults(func=validate_command_logic)
