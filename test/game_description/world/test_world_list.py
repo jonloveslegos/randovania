@@ -1,3 +1,5 @@
+import dataclasses
+
 from frozendict import frozendict
 
 from randovania.game_description.requirements import ResourceRequirement, RequirementAnd
@@ -29,10 +31,12 @@ def test_connections_from_dock_blast_shield(empty_patches):
 
     world = World("W", [area_1, area_2], {})
     world_list = WorldList([world])
+    _, dock_connection, dock_weakness = world_list.create_default_connections()
+    patches = dataclasses.replace(empty_patches, dock_connection=dock_connection, dock_weakness=dock_weakness)
 
     # Run
-    result_1 = list(world_list.connections_from(node_1, empty_patches))
-    result_2 = list(world_list.connections_from(node_2, empty_patches))
+    result_1 = list(world_list.connections_from(node_1, patches))
+    result_2 = list(world_list.connections_from(node_2, patches))
 
     # Assert
     assert result_1 == [

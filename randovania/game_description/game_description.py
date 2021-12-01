@@ -12,7 +12,7 @@ from randovania.game_description.resources.simple_resource_info import SimpleRes
 from randovania.game_description.world.area import Area
 from randovania.game_description.world.area_identifier import AreaIdentifier
 from randovania.game_description.world.dock import DockWeaknessDatabase, DockWeakness
-from randovania.game_description.world.node import TeleporterNode
+from randovania.game_description.world.node import TeleporterNode, DockNode
 from randovania.game_description.world.node_identifier import NodeIdentifier
 from randovania.game_description.world.world_list import WorldList
 from randovania.games.game import RandovaniaGame
@@ -106,14 +106,9 @@ class GameDescription:
         self._dangerous_resources = None
 
     def create_game_patches(self) -> GamePatches:
-        elevator_connection: Dict[NodeIdentifier, AreaIdentifier] = {
-            self.world_list.identifier_for_node(node): node.default_connection
-
-            for node in self.world_list.all_nodes
-            if isinstance(node, TeleporterNode) and node.editable
-        }
-
-        return GamePatches(None, {}, elevator_connection, {}, {}, {}, {}, self.starting_location, {})
+        elevator_connection, dock_connection, dock_weakness = self.world_list.create_default_connections()
+        return GamePatches(None, {}, elevator_connection, dock_connection, dock_weakness, {}, {},
+                           self.starting_location, {})
 
     @property
     def dangerous_resources(self) -> FrozenSet[ResourceInfo]:

@@ -120,14 +120,12 @@ class WorldList:
         return self._nodes_to_area[node]
 
     def resolve_dock_node(self, node: DockNode, patches: GamePatches) -> Optional[Node]:
-        connection = patches.dock_connection.get(self.identifier_for_node(node),
-                                                 node.default_connection)
+        connection = patches.dock_connection[self.identifier_for_node(node)]
         if connection is not None:
             return self.node_by_identifier(connection)
 
     def resolve_teleporter_node(self, node: TeleporterNode, patches: GamePatches) -> Optional[Node]:
-        connection = patches.elevator_connection.get(self.identifier_for_node(node),
-                                                     node.default_connection)
+        connection = patches.elevator_connection[self.identifier_for_node(node)]
         if connection is not None:
             return self.resolve_teleporter_connection(connection)
 
@@ -155,16 +153,14 @@ class WorldList:
                 if target_node is None:
                     return
 
-                forward_weakness = patches.dock_weakness.get(self.identifier_for_node(node),
-                                                             node.default_dock_weakness)
+                forward_weakness = patches.dock_weakness[self.identifier_for_node(node)]
                 requirement = forward_weakness.requirement
 
                 # TODO: only add requirement if the blast shield has not been destroyed yet
 
                 if isinstance(target_node, DockNode):
                     # TODO: Target node is expected to be a dock. Should this error?
-                    back_weakness = patches.dock_weakness.get(self.identifier_for_node(target_node),
-                                                              target_node.default_dock_weakness)
+                    back_weakness = patches.dock_weakness[self.identifier_for_node(target_node)]
                     if back_weakness.lock_type == DockLockType.FRONT_BLAST_BACK_BLAST:
                         requirement = RequirementAnd([requirement, back_weakness.requirement])
 
@@ -275,6 +271,22 @@ class WorldList:
         self.ensure_has_node_cache()
         self._nodes_to_area[node] = area
         self._nodes_to_world[node] = self.world_with_area(area)
+
+    def create_default_connections(self):
+        elevator_connection = {}
+        dock_connection = {}
+        dock_weakness = {}
+
+        for node in self.all_nodes:
+            identifier = self.identifier_for_node(node)
+            if isinstance(node, TeleporterNode):
+                elevator_connection[identifier] = node.default_connection
+
+            elif isinstance(node, DockNode):
+                dock_connection[identifier] = node.default_connection
+                dock_weakness[identifier] = node.default_dock_weakness
+
+        return elevator_connection, dock_connection, dock_weakness
 
 
 def _calculate_nodes_to_area_world(worlds: Iterable[World]):

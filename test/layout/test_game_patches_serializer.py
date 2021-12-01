@@ -7,7 +7,7 @@ import pytest
 
 from randovania.bitpacking import bitpacking
 from randovania.bitpacking.bitpacking import BitPackDecoder
-from randovania.game_description import data_reader, data_writer
+from randovania.game_description import data_reader, data_writer, default_database
 from randovania.game_description.assignment import PickupTarget
 from randovania.game_description.hint import Hint
 from randovania.game_description.requirements import ResourceRequirement
@@ -16,6 +16,7 @@ from randovania.game_description.resources.pickup_entry import PickupEntry, \
     ResourceLock, PickupModel
 from randovania.game_description.resources.pickup_index import PickupIndex
 from randovania.game_description.resources.search import find_resource_info_with_long_name
+from randovania.game_description.world.dock import DockWeakness
 from randovania.game_description.world.node import PickupNode
 from randovania.game_description.world.node_identifier import NodeIdentifier
 from randovania.games.game import RandovaniaGame
@@ -219,6 +220,12 @@ async def test_round_trip_generated_patches(default_preset):
             )
         )
     )
+    game = default_database.game_description_for(preset.game)
+    # TODO: this assumes there's no name conflicts between all types...
+    original_weaknesses: dict[str, DockWeakness] = {
+        weakness.name: weakness
+        for weakness in game.dock_weakness_database.all_weaknesses
+    }
 
     description = await generator._create_description(
         permalink=Permalink(
@@ -234,6 +241,13 @@ async def test_round_trip_generated_patches(default_preset):
     # Run
     encoded = game_patches_serializer.serialize(all_patches, {0: default_preset.game})
     decoded = game_patches_serializer.decode(encoded, {0: preset.configuration})
+
+    # world_list.patch_requirements alters the requirements inside the DockWeaknessDB
+    # let's revert that
+    all_weaknesses = set(all_patches[0].dock_weakness.values())
+    for weakness in all_weaknesses:
+        object.__setattr__(weakness, "requirement",
+                           original_weaknesses[weakness.name].requirement)
 
     # Assert
     assert all_patches == decoded

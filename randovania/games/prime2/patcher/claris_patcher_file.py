@@ -141,24 +141,27 @@ def _create_elevators_field(patches: GamePatches, game: GameDescription) -> list
 
     world_list = game.world_list
     elevator_connection = patches.elevator_connection
-
     nodes_by_teleporter = _get_nodes_by_teleporter_id(world_list)
-    if len(elevator_connection) != len(nodes_by_teleporter):
-        raise ValueError("Invalid elevator count. Expected {}, got {}.".format(
-            len(nodes_by_teleporter), len(elevator_connection)
-        ))
 
     elevator_fields = []
 
     for teleporter, connection in elevator_connection.items():
         node = world_list.node_by_identifier(teleporter)
         assert isinstance(node, TeleporterNode)
+        if not node.editable:
+            continue
+
         elevator_fields.append({
             "instance_id": node.extra["teleporter_instance_id"],
             "origin_location": _area_identifier_to_json(game.world_list, teleporter.area_location),
             "target_location": _area_identifier_to_json(game.world_list, connection),
             "room_name": _pretty_name_for_elevator(game.game, world_list, node, connection)
         })
+
+    if len(elevator_fields) != len(nodes_by_teleporter):
+        raise ValueError("Invalid elevator count. Expected {}, got {}.".format(
+            len(nodes_by_teleporter), len(elevator_fields)
+        ))
 
     return elevator_fields
 
