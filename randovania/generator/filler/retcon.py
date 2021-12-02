@@ -135,6 +135,12 @@ def weighted_potential_actions(player_state: PlayerState, status_update: Callabl
         actions_weights[action] = weight
         update_for_option()
 
+    total_weight = sum(actions_weights.values())
+
+    if player_state.has_unassigned_dock():
+        action = "ASSIGN_DOCK_STUFF"
+        actions_weights[action] = 1 if total_weight > 0 else 0
+
     if debug.debug_level() > 1:
         for action, weight in actions_weights.items():
             print("{} - {}".format(action_name(action), weight))

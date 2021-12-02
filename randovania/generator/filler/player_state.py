@@ -155,6 +155,10 @@ class PlayerState:
             ", ".join(sorted(to_progress)),
         )
 
+    def has_unassigned_dock(self):
+        patches = self.reach.state.patches
+        return None in patches.dock_weakness.values() or None in patches.dock_connection.values()
+
 
 def world_indices_for_mode(world: World, randomization_mode: RandomizationMode) -> Iterator[PickupIndex]:
     if randomization_mode is RandomizationMode.FULL:
