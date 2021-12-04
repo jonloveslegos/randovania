@@ -145,6 +145,9 @@ class PlayerState:
                        # if resource.resource_type == ResourceType.ITEM
                        }
 
+        for s, t in self.reach.state.patches.elevator_connection.items():
+            print(s, "=>", t)
+
         for node in self.reach.all_nodes:
             if not self.reach.is_reachable_node(node):
                 continue
