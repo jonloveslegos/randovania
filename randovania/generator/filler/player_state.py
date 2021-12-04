@@ -142,7 +142,16 @@ class PlayerState:
 
         to_progress = {_KEY_MATCH.sub("Key", resource.long_name)
                        for resource in interesting_resources_for_reach(self.reach)
-                       if resource.resource_type == ResourceType.ITEM}
+                       # if resource.resource_type == ResourceType.ITEM
+                       }
+
+        for node in self.reach.all_nodes:
+            if not self.reach.is_reachable_node(node):
+                continue
+            print(
+                self.game.world_list.node_name(node, with_world=True),
+                self.reach.is_safe_node(node),
+            )
 
         return ("At {0} after {1} actions and {2} pickups, with {3} collected locations.\n\n"
                 "Pickups still available: {4}\n\nResources to progress: {5}").format(

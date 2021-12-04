@@ -1,4 +1,4 @@
-from typing import Iterator, TypeVar, Dict, Any, Set, NamedTuple
+from typing import Iterator, TypeVar, Dict, Any, Set, NamedTuple, Optional
 
 from randovania.game_description.assignment import PickupAssignment
 from randovania.game_description.item.item_category import ItemCategory
@@ -8,6 +8,7 @@ from randovania.game_description.resources.resource_info import ResourceInfo
 from randovania.game_description.world.node import Node, PickupNode, ResourceNode
 from randovania.generator import reach_lib
 from randovania.generator.generator_reach import GeneratorReach
+from randovania.resolver.state import State
 
 
 def filter_pickup_nodes(nodes: Iterator[Node]) -> Iterator[PickupNode]:
@@ -25,7 +26,9 @@ def filter_unassigned_pickup_nodes(nodes: Iterator[Node],
 
 
 class UnableToGenerate(RuntimeError):
-    pass
+    def __init__(self, message: str, states: list[State] = None):
+        super().__init__(message)
+        self.states = states or []
 
 
 def should_have_hint(item_category: ItemCategory) -> bool:

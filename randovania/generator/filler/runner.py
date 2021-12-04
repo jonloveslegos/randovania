@@ -373,7 +373,7 @@ async def run_filler(rng: Random,
             ),
         )
         debug.debug_print(message)
-        raise UnableToGenerate(message) from e
+        raise UnableToGenerate(message, e.states) from e
 
     results = {}
 

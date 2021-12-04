@@ -93,7 +93,8 @@ def _get_next_player(rng: Random, player_states: List[PlayerState], num_indices:
                                             if not player_state.victory_condition_satisfied()])
 
             raise UnableToGenerate(
-                f"{unfinished_players} with no possible actions after {total_actions} total actions."
+                f"{unfinished_players} with no possible actions after {total_actions} total actions.",
+                [player_state.reach.state for player_state in player_states]
             )
 
 
@@ -267,7 +268,8 @@ def _assign_pickup_somewhere(action: PickupEntry,
         current_player.num_random_starting_items_placed += 1
         if (current_player.num_random_starting_items_placed
                 > current_player.configuration.maximum_random_starting_items):
-            raise UnableToGenerate("Attempting to place more extra starting items than the number allowed.")
+            raise UnableToGenerate("Attempting to place more extra starting items than the number allowed.",
+                                   [current_player.reach.state])
 
         spoiler_entry = f"{action.name} as starting item"
         if len(player_states) > 1:
