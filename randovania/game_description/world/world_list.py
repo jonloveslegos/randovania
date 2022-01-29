@@ -3,7 +3,7 @@ import logging
 from typing import List, Dict, Iterator, Tuple, Iterable, Optional
 
 from randovania.game_description.game_patches import GamePatches
-from randovania.game_description.requirements import Requirement, RequirementAnd
+from randovania.game_description.requirements import Requirement, RequirementAnd, ResourceRequirement
 from randovania.game_description.resources.pickup_index import PickupIndex
 from randovania.game_description.resources.resource_database import ResourceDatabase
 from randovania.game_description.resources.resource_info import CurrentResources
@@ -157,9 +157,10 @@ class WorldList:
 
                 forward_weakness = patches.dock_weakness.get(self.identifier_for_node(node),
                                                              node.default_dock_weakness)
-                requirement = forward_weakness.requirement
-
-                # TODO: only add requirement if the blast shield has not been destroyed yet
+                if forward_weakness.lock_type.has_blast_in_front:
+                    requirement = ResourceRequirement(node.blast_resource(), 1, False)
+                else:
+                    requirement = forward_weakness.requirement
 
                 if isinstance(target_node, DockNode):
                     # TODO: Target node is expected to be a dock. Should this error?
@@ -169,9 +170,10 @@ class WorldList:
                         requirement = RequirementAnd([requirement, back_weakness.requirement])
 
                     elif back_weakness.lock_type == DockLockType.FRONT_BLAST_BACK_IMPOSSIBLE:
-                        # FIXME: this should check if we've already openend the back
-                        if back_weakness != forward_weakness:
-                            requirement = Requirement.impossible()
+                        requirement = RequirementAnd([
+                            requirement,
+                            ResourceRequirement(target_node.blast_resource(), 1, False)
+                        ])
 
                 yield target_node, requirement
 

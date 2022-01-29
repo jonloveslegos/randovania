@@ -13,9 +13,8 @@ def _extra_requirement_for_node(game: GameDescription, node: Node) -> Optional[R
     extra_requirement = None
 
     if node.is_resource_node:
-        resource_node: ResourceNode = node
-
-        node_resource = resource_node.resource()
+        assert isinstance(node, ResourceNode)
+        node_resource = node.resource()
         if node_resource in game.dangerous_resources:
             extra_requirement = ResourceRequirement(node_resource, 1, False)
 
@@ -139,6 +138,7 @@ class OldGeneratorReach(GeneratorReach):
         """
         # We can't advance past a resource node if we haven't collected it
         if node.is_resource_node:
+            assert isinstance(node, ResourceNode)
             return self._state.has_resource(node.resource())
         else:
             return True

@@ -14,6 +14,10 @@ class DockLockType(Enum):
     FRONT_BLAST_BACK_BLAST = 2
     FRONT_BLAST_BACK_IMPOSSIBLE = 3
 
+    @property
+    def has_blast_in_front(self):
+        return self != DockLockType.FRONT_ALWAYS_BACK_FREE
+
 
 @dataclass(frozen=True, order=True)
 class DockWeakness:

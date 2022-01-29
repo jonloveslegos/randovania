@@ -7,6 +7,8 @@ from randovania.game_description.game_patches import GamePatches
 from randovania.game_description.resources.resource_database import ResourceDatabase
 from randovania.game_description.resources.resource_info import CurrentResources, \
     add_resource_gain_to_current_resources
+from randovania.game_description.resources.resource_type import ResourceType
+from randovania.game_description.resources.simple_resource_info import SimpleResourceInfo
 from randovania.game_description.world.node import PlayerShipNode, NodeContext
 from randovania.layout.base.base_configuration import BaseConfiguration
 from randovania.layout.base.major_items_configuration import MajorItemsConfiguration
@@ -75,6 +77,8 @@ class Bootstrap:
                                  configuration: BaseConfiguration) -> "State":
         starting_node = game.world_list.resolve_teleporter_connection(patches.starting_location)
         initial_resources = copy.copy(patches.starting_items)
+
+        initial_resources[SimpleResourceInfo(f"Dock Node 0", f"Dock0", ResourceType.DOCK_NODE)] = 1
 
         starting_energy, energy_per_tank = self.energy_config(configuration)
 

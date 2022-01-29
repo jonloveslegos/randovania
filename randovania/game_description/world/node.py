@@ -17,7 +17,7 @@ from randovania.game_description.resources.resource_info import ResourceInfo, Re
 from randovania.game_description.resources.resource_type import ResourceType
 from randovania.game_description.resources.simple_resource_info import SimpleResourceInfo
 from randovania.game_description.world.area_identifier import AreaIdentifier
-from randovania.game_description.world.dock import DockWeakness, DockType
+from randovania.game_description.world.dock import DockWeakness, DockType, DockLockType
 from randovania.game_description.world.node_identifier import NodeIdentifier
 
 
@@ -104,7 +104,7 @@ class DockNode(ResourceNode):
     the door leads to.
 
     This is the default way a node connects to another area, expected to be used in every area and it implies the
-    areas are "phyisically" next to each other.
+    areas are "physically" next to each other.
 
     TeleporterNode is expected to be used exceptionally, where it can be reasonable to list all of them in the
     UI for user selection (elevator rando, for example).
@@ -120,17 +120,28 @@ class DockNode(ResourceNode):
         return "DockNode({!r} -> {})".format(self.name, self.default_connection)
 
     def resource(self) -> ResourceInfo:
+        return SimpleResourceInfo(f"Dock Node 0", f"Dock0", ResourceType.DOCK_NODE)
+
+    def blast_resource(self):
         return SimpleResourceInfo(f"Dock Node {self.index}", f"Dock{self.index}", ResourceType.DOCK_NODE)
 
     def can_collect(self, context: NodeContext) -> bool:
-        if context.current_resources.get(self.resource(), 0) != 0:
+        weakness = context.patches.dock_weakness.get(context.self_identifier, self.default_dock_weakness)
+
+        if not weakness.lock_type.has_blast_in_front:
             return False
-        # weakness = patches.dock_weakness[None]
-        weakness = self.default_dock_weakness
+
+        if context.current_resources.get(self.blast_resource(), 0) != 0:
+            return False
+
         return weakness.requirement.satisfied(context.current_resources, 0, context.database)
 
     def resource_gain_on_collect(self, context: NodeContext) -> ResourceGain:
-        yield self.resource(), 1
+        yield self.blast_resource(), 1
+
+        # connection = context.patches.dock_connection.get(context.self_identifier, self.default_connection)
+        # if connection is not None:
+        #     return self.node_by_identifier(connection)
 
 
 @dataclasses.dataclass(frozen=True)
