@@ -15,6 +15,7 @@ class ResourceType(str, Enum):
     GATE_INDEX = "gate_index"
     LOGBOOK_INDEX = "logbook_index"
     SHIP_NODE = "ship_node"
+    DOCK_NODE = "dock_node"
 
     @classmethod
     def indices(cls) -> Dict["ResourceType", int]:
@@ -29,7 +30,8 @@ class ResourceType(str, Enum):
             ResourceType.PICKUP_INDEX: 7,
             ResourceType.GATE_INDEX: 8,
             ResourceType.LOGBOOK_INDEX: 9,
-            ResourceType.SHIP_NODE: 10
+            ResourceType.SHIP_NODE: 10,
+            ResourceType.DOCK_NODE: 11,
         }
 
     @classmethod
